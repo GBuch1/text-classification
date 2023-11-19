@@ -1,7 +1,7 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/wXpymofm)
 
-Assignment 2: Local Crawl
-Westmont College Fall 2023
+# Assignment 4: Text Classification
+## Westmont College Fall 2023
 
 # CS 128 Information Retrieval and Big Data
 
