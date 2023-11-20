@@ -4,24 +4,17 @@ __authors__ = "Garrett Buchanan" "Darian Choi"
 __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
+from typing import Iterable
+
+from classifier.classifier_models import FeatureSet, AbstractClassifier
+
 
 class OurFeature:
-    """"""
-
-    def __init__(self):
+    def processing_text(self):
         pass
 
-    def __eq__(self, other):
+    def processing_numerical(self):
         pass
-
-    def __str__(self):
-        pass
-
-    def __hash__(self):
-        pass
-
-    pass
-
 
 class OurFeatureSet:
     """"""

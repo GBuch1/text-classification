@@ -1,0 +1,27 @@
+{
+  "seeds": [
+    "/Users/gutenberg/index.txt"
+  ],
+  "options": {
+    "remove_stopwords": true,
+    "stopwords_lang": "english"
+  },
+  "agent_config": {
+    "external": [
+      "https://",
+      "http://"
+    ],
+    "encoding": "UTF-8",
+    "parser": "html.parser",
+    "tags": {
+      "div": {
+        "class": [
+          "p",
+          "q"
+        ]
+      }
+    },
+    "debug": true
+  }
+}
+
