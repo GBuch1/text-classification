@@ -1,5 +1,5 @@
 "Data types for classifier inheriting abstract classes from classifier models"
-
+from typing import Iterable
 
 from classifier.classifier_models import Feature, FeatureSet, AbstractClassifier
 
@@ -19,4 +19,9 @@ class OurFeatureSet(FeatureSet):
     pass
 
 class OurAbstractClassifier(AbstractClassifier):
-    pass
+    def gamma(self) -> str:
+        pass
+    def present_features(self, top_n: int = 1) -> None:
+        pass
+    def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
+        pass
