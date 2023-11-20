@@ -55,7 +55,6 @@ class OurAbstractClassifier:
         """
         pass
 
-
     def train(self):
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
