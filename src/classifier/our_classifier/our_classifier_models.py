@@ -6,18 +6,22 @@ __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
 from typing import Iterable
 
-from classifier.classifier_models import FeatureSet, AbstractClassifier
+from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
 
-class OurFeature:
+class OurFeature(Feature):
+    def compute_feature(self):
+        pass
+
+
+class OurFeatureSet(FeatureSet):
+    """"""
+
     def processing_text(self):
         pass
 
     def processing_numerical(self):
         pass
-
-class OurFeatureSet:
-    """"""
 
     def __init__(self):
         pass
@@ -28,7 +32,7 @@ class OurFeatureSet:
     pass
 
 
-class OurAbstractClassifier:
+class OurAbstractClassifier(AbstractClassifier):
     """"""
 
     def __init__(self):
