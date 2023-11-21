@@ -77,7 +77,6 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.feature_set_neutral = OurFeatureSet(features={self.feature9, self.feature10})
         self.feature_set_negative = OurFeatureSet(features={self.feature5, self.feature7})
 
-
     def test_gamma(self):
         featuresets = self.feature_set_positive2, self.feature_set_neutral, self.feature_set_negative
         train_set, test_set = featuresets[6:], featuresets[:6]
@@ -90,7 +89,14 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.assertEqual(expected3, self.gamma.OurAbstractClassifier(featuresets))
 
     def test_present_features(self):
-        pass
+        expected1 = str("contains outstanding = True pos:neg:neutral = 9 : 2 : 0", "contains evil = True "
+                                                                                   "pos:neg:neutral = 1.2:3.1:4.1",
+                        "contains outstanding = True pos:neg:neutral = 1.2:3.1:4.1")
+        expected2 = str("contains outstanding = True pos:neg:neutral = 9 : 2 : 0")
+
+        self.assertEqual(expected1, OurAbstractClassifier.present_features(3))
+        self.assertEqual(expected2, OurAbstractClassifier.present_features(1))
+        self.assertEqual(OurAbstractClassifier.present_features(0), "Int n cannot be 0")
 
     def test_train(self):
         pass
