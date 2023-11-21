@@ -130,18 +130,18 @@ class OurAbstractClassifierTest(unittest.TestCase):
         expected_output1 = {"contains pain: True neg/pos/neut 7:1:2", "contains awful: True neg/pos/neut 6:2:1",
                             "contains terrific: "
                             "True neg/pos/neut 3:6:1"}
-        output1 = OurAbstractClassifier.present_features(top_n=3)
+        output1 = OurClassifier.present_features(top_n=3)
 
         self.assertEqual(expected_output1, output1)
 
     def test_present_features_single(self):
         expected_output2 = "contains pain: True neg/pos/neut 7:1:2"
-        output2 = OurAbstractClassifier.present_features(top_n=1)
+        output2 = OurClassifier.present_features(top_n=1)
 
         self.assertEqual(expected_output2, output2)
 
     def test_present_features_error(self):
-        output3 = OurAbstractClassifier.present_features(top_n=0)
+        output3 = OurClassifier.present_features(top_n=0)
         if output3:
             self.assertRaises(ValueError)
 
