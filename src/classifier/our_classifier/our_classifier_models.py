@@ -12,23 +12,36 @@ from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
 
 class OurFeature(Feature):
-    def compute_feature(self) -> None:
-        """"TODO: implement compute feature to return a usable feature"""
-
-        pass
+    """"TODO: MAYBE IMPLEMENT?"""
+    pass
 
 
 class OurFeatureSet(FeatureSet):
     """TODO: implement so that method takes in a string data type which then tokenizes the text and creates features and
     adds them into a set"""
 
-    def build(cls, source_object, known_clas=None, **kwargs):
-        if isinstance(source_object, str):  # Assuming source_object is a string
-            tokens = word_tokenize(source_object)
-            features = {Feature(token.lower(), True) for token in tokens}
-            return cls(features, known_clas)
-        else:
-            raise ValueError("Expected source_object of type str (text data)")
+    def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
+        """TODO: IMPLEMENT ME"""
+        """
+        :param source_object: object to build the feature set from
+        :param known_clas: pre-defined classification of the source object
+        :param kwargs: any additional data needed to preprocess the `source_object` into a feature set
+        :return: an instance of `FeatureSet` built based on the `source_object` passed in
+        """
+        """make sure the input is a string and will take in a source object and a class associated 
+        with object and build a set based on the values and classification"""
+
+        # def is_string() -> source_object:
+        #     """TODO: processes the text taken in from corpus and makes sure it is a string text"""
+        #     if isinstance(source_object, str):
+        #         return source_object
+        #     else:
+        #         raise ValueError("Expected source_object of type str (text data)")
+        #
+        # if source_object.is_string:
+        #     tokens = word_tokenize(source_object)
+        #     features = {Feature(token.lower(), True) for token in tokens}
+        #     return cls
 
 
 class OurAbstractClassifier(AbstractClassifier):
@@ -38,11 +51,13 @@ class OurAbstractClassifier(AbstractClassifier):
         pass
 
     def gamma(self, feat_set: OurFeatureSet) -> str:
-        """Input self and a feature set created by
-        implementing the FeatureSet class."""
+        """"TODO: IMPLEMENT ME:"""
+        """ takes in a feature set then iterates through each feature and then 
+        calculates the probability of it mapping to each class"""
         pass
 
     def present_features(self, top_n: int = 1) -> None:
+        """TODO: IMPLEMENT ME:"""
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
         how "good" a feature is in determining the class for an object.
@@ -52,6 +67,7 @@ class OurAbstractClassifier(AbstractClassifier):
         pass
 
     def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
+        """TODO: IMPLEMENT ME"""
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
         present_features` method calls immediately without needing any other method invocations prior to them.
