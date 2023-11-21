@@ -11,17 +11,17 @@
 #### Name(s): Darian Choi, Garret Buchanan 
 #### Email(s): dchoi@westmont.edu, gbuchanan@westmont.edu
 
-### CORPUS AND WHY WE CHOSE IT 
+### **CORPUS AND WHY WE CHOSE IT**
 #### We chose the corpus "Twitter samples" in order to see how singular words that serve as our features impact the negativity, positivity, or neutrality of a tweet. Also being able to see which words are the most impactful in giving a tweet a certain connotation. 
-### PROBLEM DESCRIPTION 
+### **PROBLEM DESCRIPTION**
 "TODO:"
 
-### IMPLEMENTATION GUIDE
+### **IMPLEMENTATION GUIDE**
 "TODO:"
 
-## PARTNER GROUP WORK DIVISION
+## **PARTNER GROUP WORK DIVISION**
 "TODO:"
-### WHAT WE LEARNED WORKING AS A GROUP
+### **WHAT WE LEARNED WORKING AS A GROUP**
 "TODO:"
 
 
