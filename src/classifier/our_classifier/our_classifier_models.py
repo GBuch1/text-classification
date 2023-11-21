@@ -6,34 +6,33 @@ __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
 from typing import Iterable
 
+from nltk import word_tokenize
+
 from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
 
 class OurFeature(Feature):
-    def compute_feature(self):
+    def compute_feature(self) -> None:
+        """"TODO: implement compute feature to return a usable feature"""
+
         pass
 
 
 class OurFeatureSet(FeatureSet):
-    """"""
+    """TODO: implement so that method takes in a string data type which then tokenizes the text and creates features and
+    adds them into a set"""
 
-    def processing_text(self):
-        pass
-
-    def processing_numerical(self):
-        pass
-
-    def __init__(self):
-        pass
-
-    def build(self):
-        pass
-
-    pass
+    def build(cls, source_object, known_clas=None, **kwargs):
+        if isinstance(source_object, str):  # Assuming source_object is a string
+            tokens = word_tokenize(source_object)
+            features = {Feature(token.lower(), True) for token in tokens}
+            return cls(features, known_clas)
+        else:
+            raise ValueError("Expected source_object of type str (text data)")
 
 
 class OurAbstractClassifier(AbstractClassifier):
-    """"""
+    """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
 
     def __init__(self):
         pass
