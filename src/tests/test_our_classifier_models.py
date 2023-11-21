@@ -126,15 +126,24 @@ class OurAbstractClassifierTest(unittest.TestCase):
         expected1 = "negative"
         self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_negative3))
 
-    def test_present_features(self):
-        expected1 = str("contains outstanding = True pos:neg:neutral = 9 : 2 : 0", "contains evil = True "
-                                                                                   "pos:neg:neutral = 1.2:3.1:4.1",
-                        "contains outstanding = True pos:neg:neutral = 1.2:3.1:4.1")
-        expected2 = str("contains outstanding = True pos:neg:neutral = 9 : 2 : 0")
+    def test_present_features_multiple(self):
+        expected_output1 = {"contains pain: True neg/pos/neut 7:1:2", "contains awful: True neg/pos/neut 6:2:1",
+                            "contains terrific: "
+                            "True neg/pos/neut 3:6:1"}
+        output1 = OurAbstractClassifier.present_features(top_n=3)
 
-        self.assertEqual(expected1, OurClassifier.present_features(3))
-        self.assertEqual(expected2, OurClassifier.present_features(1))
-        self.assertEqual(OurClassifier.present_features(0), "Int n cannot be 0")
+        self.assertEqual(expected_output1, output1)
+
+    def test_present_features_single(self):
+        expected_output2 = "contains pain: True neg/pos/neut 7:1:2"
+        output2 = OurAbstractClassifier.present_features(top_n=1)
+
+        self.assertEqual(expected_output2, output2)
+
+    def test_present_features_error(self):
+        output3 = OurAbstractClassifier.present_features(top_n=0)
+        if output3:
+            self.assertRaises(ValueError)
 
     def test_train_gamma(self):
         pass
