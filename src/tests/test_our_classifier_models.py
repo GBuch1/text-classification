@@ -104,6 +104,31 @@ class OurAbstractClassifierTest(unittest.TestCase):
                                                   known_clas="neutral")
         self.feature_set_negative3 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
                                                    known_clas="negative")
+        """---train test setup---"""
+
+        self.feature7 = OurFeature("contains bad", True)
+        self.feature8 = OurFeature("contains fantastic", True)
+        self.feature9 = OurFeature("contains negative", True)
+
+        self.feature10 = OurFeature("contains cry", True)
+        self.feature11 = OurFeature("contains positive", True)
+        self.feature12 = OurFeature("contains devastating", True)
+
+        self.feature_set_positive4 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                   known_clas="positive")
+        self.feature_set_positive5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                   known_clas="positive")
+        self.feature_set_neutral4 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                  known_clas="neutral")
+        self.feature_set_neutral5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                  known_clas="neutral")
+        self.feature_set_negative4 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                   known_clas="negative")
+        self.feature_set_negative5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                   known_clas="negative")
+
+        self.feature_set_positive6 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+                                                   known_clas="positive")
 
     def test_gamma_positive(self):
         featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
@@ -144,16 +169,31 @@ class OurAbstractClassifierTest(unittest.TestCase):
         output3 = OurClassifier.present_features(top_n=0)
         if output3:
             self.assertRaises(ValueError)
-
+            
     def test_train_gamma(self):
-        pass
+        """If gamma returns the expected results then we know that our classifier is being trained correctly"""
+        featuresets = [self.feature_set_positive4, self.feature_set_positive5, self.feature_set_neutral4,
+                       self.feature_set_neutral5, self.feature_set_negative4, self.feature_set_negative5]
+        classifier = OurClassifier.train(training_set=featuresets)
+        expected1 = "positive"
+        self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_positive6))
 
-    def test_train_probStore(self):
-        pass
+    def test_train_probVariable(self):
+        """Only one test here for the method probability_value() because not sure if it will be implemented
+           in the final code. For now using it as one of the three necessary tests for the train method.
+           This method if implemented would store the probability value of the gamma equation before gamma
+           returns the predicted class as a string."""
+        featuresets = [self.feature_set_positive4, self.feature_set_positive5, self.feature_set_neutral4,
+                       self.feature_set_neutral5, self.feature_set_negative4, self.feature_set_negative5]
+        classifier = OurClassifier.train(training_set=featuresets)
+        expected_prob = 0.0326758
+        self.assertAlmostEqual(expected_prob, classifier.gamma.probability_value(a_feature_set=self.feature_set_positive6))
 
-    def test_train_notNone(self):
-        pass
-
+    def test_train_empty(self):
+        featuresets = []
+        with self.assertRaises(ValueError):
+            OurClassifier.train(training_set=featuresets)
+            
 
 if __name__ == '__main__':
     unittest.main()
