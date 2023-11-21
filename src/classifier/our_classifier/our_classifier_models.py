@@ -4,7 +4,7 @@ __authors__ = "Garrett Buchanan" "Darian Choi"
 __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
-from typing import Iterable
+from typing import Iterable, Any
 
 from nltk import word_tokenize
 
@@ -17,8 +17,8 @@ class OurFeature(Feature):
 
 
 class OurFeatureSet(FeatureSet):
-    """TODO: implement so that method takes in a string data type which then tokenizes the text and creates features and
-    adds them into a set"""
+    """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature set based on the
+    features in that document """
 
     def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
         """TODO: IMPLEMENT ME"""
@@ -28,15 +28,6 @@ class OurFeatureSet(FeatureSet):
         :param kwargs: any additional data needed to preprocess the `source_object` into a feature set
         :return: an instance of `FeatureSet` built based on the `source_object` passed in
         """
-        """make sure the input is a string and will take in a source object and a class associated 
-        with object and build a set based on the values and classification"""
-
-        # def is_string() -> source_object:
-        #     """TODO: processes the text taken in from corpus and makes sure it is a string text"""
-        #     if isinstance(source_object, str):
-        #         return source_object
-        #     else:
-        #         raise ValueError("Expected source_object of type str (text data)")
         #
         # if source_object.is_string:
         #     tokens = word_tokenize(source_object)
