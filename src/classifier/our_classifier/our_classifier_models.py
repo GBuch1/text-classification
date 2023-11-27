@@ -5,8 +5,10 @@ __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
 from typing import Iterable, Any
-
-from nltk import word_tokenize
+import nltk
+from nltk.corpus import gutenberg
+from nltk.tokenize import word_tokenize
+from collections import Counter
 
 from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
@@ -17,8 +19,8 @@ class OurFeature(Feature):
 
 
 class OurFeatureSet(FeatureSet):
-    """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature set based on the
-    features in that document """
+    """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature
+        set based on the features in that document"""
 
     def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
         """TODO: IMPLEMENT ME"""
@@ -28,11 +30,14 @@ class OurFeatureSet(FeatureSet):
         :param kwargs: any additional data needed to preprocess the `source_object` into a feature set
         :return: an instance of `FeatureSet` built based on the `source_object` passed in
         """
-        #
-        # if source_object.is_string:
-        #     tokens = word_tokenize(source_object)
-        #     features = {Feature(token.lower(), True) for token in tokens}
-        #     return cls
+        features = set()
+
+        if isinstance(source_object, str):
+            tokens = source_object.split()
+            for token in tokens:
+                features.add(Feature(name=f"word_{token}", value=1))  # Create a feature for each token
+
+        return cls
 
 
 class OurAbstractClassifier(AbstractClassifier):
