@@ -5,10 +5,6 @@ __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
 from typing import Iterable, Any
-import nltk
-from nltk.corpus import gutenberg
-from nltk.tokenize import word_tokenize
-from collections import Counter
 
 from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
@@ -21,7 +17,7 @@ class OurFeature(Feature):
 class OurFeatureSet(FeatureSet):
     """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature
         set based on the features in that document"""
-
+    @classmethod
     def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
         """TODO: IMPLEMENT ME"""
         """
@@ -37,19 +33,25 @@ class OurFeatureSet(FeatureSet):
             for token in tokens:
                 features.add(Feature(name=f"word_{token}", value=1))  # Create a feature for each token
 
-        return cls
+        return cls(features, known_clas)
 
 
 class OurAbstractClassifier(AbstractClassifier):
     """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
 
-    def __init__(self):
-        pass
-
     def gamma(self, feat_set: OurFeatureSet) -> str:
         """"TODO: IMPLEMENT ME:"""
         """ takes in a feature set then iterates through each feature and then 
         calculates the probability of it mapping to each class"""
+        ## iterate through the feature set get the probability for each word to map to a class
+        ## multiply together each feature probability together for one object for one class
+        ## find all probablities for each class and then take the max
+        # return the max probabilities class
+        counter = 0
+
+
+
+
         pass
 
     def present_features(self, top_n: int = 1) -> None:
@@ -60,8 +62,12 @@ class OurAbstractClassifier(AbstractClassifier):
 
         :param top_n: how many of the top features to print; must be 1 or greater
         """
+        #   need to have a variable with the saved probabilities for each feature in order to then list
+        #   in descending order. Need variables for the feature and the score, create a subclass for this
+        #   or use a dictionary with key value pairs where key = feature and value = prob score.
         pass
 
+    @classmethod
     def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
         """TODO: IMPLEMENT ME"""
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
