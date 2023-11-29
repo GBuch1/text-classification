@@ -43,10 +43,11 @@ class OurFeatureSet(FeatureSet):
 class OurClassifier(AbstractClassifier):
     """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
 
-    def __init__(self):
-        self.class_word_counts = defaultdict(Counter)
-        self.class_total_words = Counter()
-        self.classes = set()
+    def __init__(self, class_word_counts, class_total_words, classes):
+        self.classes = classes
+        self.class_total_words = class_total_words
+        self.class_word_counts = class_word_counts\
+
 
     def gamma(self, feat_set: OurFeatureSet) -> str:
         """"TODO: IMPLEMENT ME:"""
@@ -60,13 +61,13 @@ class OurClassifier(AbstractClassifier):
         best_score = float  # float variable that determines the class based on probablity score
 
         for cls in self.classes:
-            score = 0
+            score = float
             for feature in feat_set.feat:  # makes the featureset readable by calling feat property on it then iterates
                 word = feature.name  # extracts the word of the feature
                 word_count = self.class_word_counts[cls][word]
                 class_total = self.class_total_words[cls]
                 if class_total != 0:
-                    score *= word_count / class_total  #multiplying all the words together
+                    score *= word_count / class_total  # multiplying all the words together
             # lets say theres the word awesome 50 times in the class positive and
             # 100 positive words in the class score would be .5
             if score > best_score:  # then compare the score we got with the max score and determine
@@ -99,15 +100,15 @@ class OurClassifier(AbstractClassifier):
         :return: an instance of `AbstractClassifier` with its training already completed
         
         """
-        classifier = cls()
+        class_word_counts = defaultdict(Counter)
+        class_total_words = Counter()
+        classes = set()
 
         for feat_set in training_set:
             cls_name = feat_set.clas
-            classifier.classes.add(cls_name)
+            classes.add(cls_name)
             for feature in feat_set.feat:
-                classifier.class_word_counts[cls_name][feature.value] += 1
-                classifier.class_total_words[cls_name] += 1
+                class_word_counts[cls_name][feature.word] += 1
+                class_total_words[cls_name] += 1
 
-        return classifier
-
-        pass
+        return cls(class_word_counts,class_total_words,classes)
