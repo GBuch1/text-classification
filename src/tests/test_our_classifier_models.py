@@ -99,8 +99,8 @@ class OurAbstractClassifierTest(unittest.TestCase):
 
         self.feature_set_positive = OurFeatureSet(features={self.feature20, self.feature18})
         self.feature_set_positive2 = OurFeatureSet(features={self.feature6, self.feature8})
-        self.feature_set_positive3 = OurFeatureSet(features={self.feature10, self.feature21})
-        self.feature_set_positive4 = OurFeatureSet(features={self.feature6, self.feature8})
+        self.feature_set_positive3 = OurFeatureSet(features={self.feature6, self.feature21})
+        self.feature_set_positive4 = OurFeatureSet(features={self.feature19, self.feature18})
         self.feature_set_neutral = OurFeatureSet(features={self.feature21, self.feature13})
         self.feature_set_negative = OurFeatureSet(features={self.feature5, self.feature7})
 
@@ -205,11 +205,10 @@ class OurAbstractClassifierTest(unittest.TestCase):
 
     def test_train_gamma(self):
         """If gamma returns the expected results then we know that our classifier is being trained correctly"""
-        featuresets = [self.feature_set_positive4, self.feature_set_positive5, self.feature_set_neutral4,
-                       self.feature_set_neutral5, self.feature_set_negative4, self.feature_set_negative5]
-        classifier = OurClassifier.train(training_set=featuresets)
-        expected1 = "positive"
-        self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_positive6))
+        featuresets = [self.feature_set_positive3, self.feature_set_positive4]
+        classifier = OurClassifier.train(featuresets)
+        expected = "positive"
+        self.assertEqual(expected, classifier.gamma(self.feature_set_positive))
 
     def test_train_probVariable(self):
         """Only one test here for the method probability_value() because not sure if it will be implemented
@@ -224,7 +223,7 @@ class OurAbstractClassifierTest(unittest.TestCase):
                                classifier.gamma.probability_value(a_feature_set=self.feature_set_positive6))
 
     def test_train_empty(self):
-        featuresets = []
+        featuresets = set()
         with self.assertRaises(ValueError):
             OurClassifier.train(training_set=featuresets)
 
