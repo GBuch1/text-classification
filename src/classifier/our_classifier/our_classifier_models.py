@@ -4,7 +4,10 @@ __authors__ = "Garrett Buchanan" "Darian Choi"
 __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
+from collections import defaultdict, Counter
 from typing import Iterable, Any
+
+from nltk.corpus import twitter_samples
 
 from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
@@ -17,6 +20,7 @@ class OurFeature(Feature):
 class OurFeatureSet(FeatureSet):
     """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature
         set based on the features in that document"""
+
     @classmethod
     def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
         """TODO: IMPLEMENT ME"""
@@ -36,8 +40,13 @@ class OurFeatureSet(FeatureSet):
         return cls(features, known_clas)
 
 
-class OurAbstractClassifier(AbstractClassifier):
+class OurClassifier(AbstractClassifier):
     """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
+
+    def __init__(self):
+        self.class_word_counts = defaultdict(Counter)
+        self.class_total_words = Counter()
+        self.classes = set()
 
     def gamma(self, feat_set: OurFeatureSet) -> str:
         """"TODO: IMPLEMENT ME:"""
@@ -47,12 +56,24 @@ class OurAbstractClassifier(AbstractClassifier):
         ## multiply together each feature probability together for one object for one class
         ## find all probablities for each class and then take the max
         # return the max probabilities class
-        counter = 0
+        likely_class = None  # this is the variable that holds the class that is most probable
+        best_score = float  # float variable that determines the class based on probablity score
 
+        for cls in self.classes:
+            score = 0
+            for feature in feat_set.feat:  # makes the featureset readable by calling feat property on it then iterates
+                word = feature.name  # extracts the word of the feature
+                word_count = self.class_word_counts[cls][word]
+                class_total = self.class_total_words[cls]
+                if class_total != 0:
+                    score *= word_count / class_total  #multiplying all the words together
+            # lets say theres the word awesome 50 times in the class positive and
+            # 100 positive words in the class score would be .5
+            if score > best_score:  # then compare the score we got with the max score and determine
+                best_score = score
+                likely_class = cls
 
-
-
-        pass
+        return likely_class
 
     def present_features(self, top_n: int = 1) -> None:
         """TODO: IMPLEMENT ME:"""
@@ -76,7 +97,17 @@ class OurAbstractClassifier(AbstractClassifier):
 
         :param training_set: An iterable collection of `FeatureSet` to use for training the classifier
         :return: an instance of `AbstractClassifier` with its training already completed
+        
         """
-        pass
+        classifier = cls()
 
-    pass
+        for feat_set in training_set:
+            cls_name = feat_set.clas
+            classifier.classes.add(cls_name)
+            for feature in feat_set.feat:
+                classifier.class_word_counts[cls_name][feature.value] += 1
+                classifier.class_total_words[cls_name] += 1
+
+        return classifier
+
+        pass
