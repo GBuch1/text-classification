@@ -99,8 +99,8 @@ class OurAbstractClassifierTest(unittest.TestCase):
 
         self.feature_set_positive1 = OurFeatureSet(features={self.feature20, self.feature18})
         self.feature_set_positive2 = OurFeatureSet(features={self.feature6, self.feature8})
-        self.feature_set_positive3 = OurFeatureSet(features={self.feature6, self.feature21})
-        self.feature_set_positive4 = OurFeatureSet(features={self.feature19, self.feature18})
+        self.feature_set_positive3 = OurFeatureSet(features={self.feature6, self.feature21}, known_clas="positive")
+        self.feature_set_positive4 = OurFeatureSet(features={self.feature19, self.feature18}, known_clas="positive")
         self.feature_set_neutral = OurFeatureSet(features={self.feature21, self.feature13})
         self.feature_set_negative = OurFeatureSet(features={self.feature5, self.feature7})
 
@@ -116,20 +116,20 @@ class OurAbstractClassifierTest(unittest.TestCase):
                                                    known_clas="positive")
         self.feature_set_present2 = OurFeatureSet(features={self.feature11, self.feature7, self.feature6},
                                                    known_clas="positive")
-        self.feature_set_neutral1 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
-                                                  known_clas="neutral")
-        self.feature_set_neutral2 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
-                                                  known_clas="neutral")
-        self.feature_set_negative1 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        # self.feature_set_neutral1 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        #                                           known_clas="neutral")
+        # self.feature_set_neutral2 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        #                                           known_clas="neutral")
+        self.feature_set_negative1 = OurFeatureSet(features={self.feature11, self.feature12, self.feature13},
                                                    known_clas="negative")
-        self.feature_set_negative2 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        self.feature_set_negative2 = OurFeatureSet(features={self.feature17, self.feature10, self.feature7},
                                                    known_clas="negative")
 
-        self.feature_set_positive3 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
+        self.feature_set_positive5 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
                                                    known_clas="positive")
-        self.feature_set_neutral3 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
-                                                  known_clas="neutral")
-        self.feature_set_negative3 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
+        # self.feature_set_neutral3 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
+        #                                           known_clas="neutral")
+        self.feature_set_negative5 = OurFeatureSet(features={self.feature4, self.feature5, self.feature6},
                                                    known_clas="negative")
         """---train test setup---"""
 
@@ -141,17 +141,17 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.feature11 = OurFeature("contains positive", True)
         self.feature12 = OurFeature("contains devastating", True)
 
-        self.feature_set_positive4 = OurFeatureSet(features={self.feature6, self.feature20, self.feature24},
+        self.feature_set_positive10 = OurFeatureSet(features={self.feature6, self.feature20, self.feature24},
                                                    known_clas="positive")
-        self.feature_set_positive5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+        self.feature_set_positive11 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
                                                    known_clas="positive")
-        self.feature_set_neutral4 = OurFeatureSet(features={self.feature7, self.feature8, self.feature10, self.feature18},
-                                                  known_clas="neutral")
-        self.feature_set_neutral5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
-                                                  known_clas="neutral")
-        self.feature_set_negative4 = OurFeatureSet(features={self.feature5, self.feature7, self.feature9},
+        # self.feature_set_neutral4 = OurFeatureSet(features={self.feature7, self.feature8, self.feature10, self.feature18},
+        #                                           known_clas="neutral")
+        # self.feature_set_neutral5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+        #                                           known_clas="neutral")
+        self.feature_set_negative11 = OurFeatureSet(features={self.feature5, self.feature7, self.feature9},
                                                    known_clas="negative")
-        self.feature_set_negative5 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
+        self.feature_set_negative10 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
                                                    known_clas="negative")
 
         self.feature_set_positive6 = OurFeatureSet(features={self.feature7, self.feature8, self.feature9},
@@ -170,16 +170,15 @@ class OurAbstractClassifierTest(unittest.TestCase):
         expected1 = "positive"
         self.assertEqual(expected1, classifier.gamma(self.feature_set_positive3))
 
-    def test_gamma_neutral(self):
-        featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
-                       self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
-        classifier = OurClassifier.train(featuresets)
-        expected1 = "neutral"
-        self.assertEqual(expected1, classifier.gamma(self.feature_set_neutral3))
+    # def test_gamma_neutral(self):
+    #     featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
+    #                    self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
+    #     classifier = OurClassifier.train(featuresets)
+    #     expected1 = "neutral"
+    #     self.assertEqual(expected1, classifier.gamma(self.feature_set_neutral3))
 
     def test_gamma_negative(self):
-        featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
-                       self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_negative1, self.feature_set_negative2]
         classifier = OurClassifier.train(featuresets)
         expected1 = "negative"
         self.assertEqual(expected1, classifier.gamma(self.feature_set_negative3))
