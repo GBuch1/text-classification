@@ -5,7 +5,9 @@ __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
 
 from collections import defaultdict, Counter
-from typing import Iterable, Any
+from itertools import islice
+from math import log10
+from typing import Iterable, Any, Tuple
 
 from nltk.corpus import twitter_samples
 
@@ -33,9 +35,10 @@ class OurFeatureSet(FeatureSet):
         features = set()
 
         if isinstance(source_object, str):
-            tokens = source_object.split()
-            for token in tokens:
-                features.add(Feature(name=f"word_{token}", value=1))  # Create a feature for each token
+            tokens = source_object.lower()
+            split_words = tokens.split()
+            for token in split_words:
+                features.add(Feature(name=f"contains word {token}", value=True))  # Create a feature for each token
 
         return cls(features, known_clas)
 
@@ -43,38 +46,53 @@ class OurFeatureSet(FeatureSet):
 class OurClassifier(AbstractClassifier):
     """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
 
-    def __init__(self, class_word_counts, class_total_words, classes):
+    def __init__(self, class_word_counts, class_total_words, classes, feature_probabilities):
         self.classes = classes
         self.class_total_words = class_total_words
-        self.class_word_counts = class_word_counts\
-
+        self.class_word_counts = class_word_counts
+        self.feature_probabilities = feature_probabilities
+        self.stored_ratio = {}
 
     def gamma(self, feat_set: OurFeatureSet) -> str:
         """"TODO: IMPLEMENT ME:"""
         """ takes in a feature set then iterates through each feature and then 
         calculates the probability of it mapping to each class"""
-        ## iterate through the feature set get the probability for each word to map to a class
-        ## multiply together each feature probability together for one object for one class
-        ## find all probablities for each class and then take the max
-        # return the max probabilities class
-        likely_class = None  # this is the variable that holds the class that is most probable
-        best_score = float  # float variable that determines the class based on probablity score
+        # gamma needs to take in a specific feature set CALL the probablities for the specific class for each feature from feature probabilities variable
+        # take the highest probablity of the three classes
+        # using log addition we add the probablities together
 
+        highest_probability = 0.0
+        predicted_class = ''
         for cls in self.classes:
-            score = float
-            for feature in feat_set.feat:  # makes the featureset readable by calling feat property on it then iterates
-                word = feature.name  # extracts the word of the feature
-                word_count = self.class_word_counts[cls][word]
-                class_total = self.class_total_words[cls]
-                if class_total != 0:
-                    score *= word_count / class_total  # multiplying all the words together
-            # lets say theres the word awesome 50 times in the class positive and
-            # 100 positive words in the class score would be .5
-            if score > best_score:  # then compare the score we got with the max score and determine
-                best_score = score
-                likely_class = cls
+            probability = 0.0  # Probability for the current class
+            for feature in feat_set.feat:
+                if feature.name not in self.feature_probabilities:
+                    pass
+                else:
+                    feature_prob = self.feature_probabilities[feature.name][cls] # access the probability
+                    probability += log10(feature_prob + 1)
 
-        return likely_class
+                    if probability > highest_probability:
+                        highest_probability = probability
+                        predicted_class = cls
+        return predicted_class
+
+    ## make a ratio method
+    ## takes a positive and negative probablity for a feature and then the ratio between them
+    ## the greater the ratio the greater informativeness it is
+    ## just to find a way to sort all the ratio probablities with the keys with it
+
+    #def ratio(self):
+
+        # for feature in self.feature_probabilities.keys():
+        #     positive_prob = self.feature_probabilities[feature]["positive"]
+        #     negative_prob = self.feature_probabilities[feature]["negative"]
+        #     if positive_prob > negative_prob:
+        #         ratio = positive_prob / negative_prob
+        #         self.stored_ratio.update({feature: ratio})
+        #     else:
+        #         ratio = negative_prob / positive_prob
+        #         self.stored_ratio.update({feature: ratio})
 
     def present_features(self, top_n: int = 1) -> None:
         """TODO: IMPLEMENT ME:"""
@@ -87,11 +105,30 @@ class OurClassifier(AbstractClassifier):
         #   need to have a variable with the saved probabilities for each feature in order to then list
         #   in descending order. Need variables for the feature and the score, create a subclass for this
         #   or use a dictionary with key value pairs where key = feature and value = prob score.
-        pass
+        for feature in self.feature_probabilities.keys():
+            positive_prob = self.feature_probabilities[feature]["positive"] + 1
+            negative_prob = self.feature_probabilities[feature]["negative"] + 1
+
+            if positive_prob > negative_prob:
+                ratio = positive_prob / negative_prob
+                formatted_ratio = "pos:neg {:.2f}:1".format(ratio)  #formatting the ratios
+                self.stored_ratio.update({feature: formatted_ratio})
+            else:
+                ratio = negative_prob / positive_prob
+                formatted_ratio = "neg:pos {:.2f}:1".format(ratio)  # Formatting the ratios
+                self.stored_ratio.update({feature: formatted_ratio})
+
+        sorted_ratios = dict(sorted(self.stored_ratio.items(), key=lambda item: item[1], reverse=True))
+        top_n_ratios = dict(islice(sorted_ratios.items(), top_n))
+        for feature, ratio in top_n_ratios.items():
+            print(f"{feature}: {ratio}")
+
+
 
     @classmethod
     def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
         """TODO: IMPLEMENT ME"""
+
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
         present_features` method calls immediately without needing any other method invocations prior to them.
@@ -101,14 +138,37 @@ class OurClassifier(AbstractClassifier):
         
         """
         class_word_counts = defaultdict(Counter)
-        class_total_words = Counter()
-        classes = set()
+        class_total_words = {"positive": 0, "negative": 0}
+        classes = ("positive", "negative")
+        feature_probabilities = {}
+        if training_set is None:
+            raise ValueError
+        else:
+            for feat_set in training_set:
+                cls_name = feat_set.clas
+                for feature in feat_set.feat:
+                    class_word_counts[cls_name][feature.name] += 1
+                    class_total_words[cls_name] += 1
 
-        for feat_set in training_set:
-            cls_name = feat_set.clas
-            classes.add(cls_name)
-            for feature in feat_set.feat:
-                class_word_counts[cls_name][feature.word] += 1
-                class_total_words[cls_name] += 1
+            for unique in classes:
+                for feat_set in training_set:  # Loop through all feature sets again
+                    for feature in feat_set.feat:
+                        word = feature.name  # Extract the word of the feature
+                        word_count = class_word_counts[unique][word]
+                        class_total = class_total_words[unique]
+                        if class_total != 0:
+                            score = word_count / class_total
+                            if feature.name not in feature_probabilities:
+                                feature_probabilities[feature.name] = {}
+                            feature_probabilities[feature.name][unique] = score
+                        else:
+                            score = 0
+                            if feature.name not in feature_probabilities:
+                                feature_probabilities[feature.name] = {}
+                            feature_probabilities[feature.name][unique] = score
 
-        return cls(class_word_counts,class_total_words,classes)
+
+                # come up with a way to store a dictionary with feature name and class as key
+                        # value should store the probablity
+        # print(feature_probabilities)
+        return cls(class_word_counts, class_total_words, classes, feature_probabilities)
