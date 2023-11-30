@@ -166,23 +166,23 @@ class OurAbstractClassifierTest(unittest.TestCase):
     def test_gamma_positive(self):
         featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
                        self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
-        classifier = OurClassifier.train(training_set=featuresets)
+        classifier = OurClassifier.train(featuresets)
         expected1 = "positive"
-        self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_positive3))
+        self.assertEqual(expected1, classifier.gamma(self.feature_set_positive3))
 
     def test_gamma_neutral(self):
         featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
                        self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
-        classifier = OurClassifier.train(training_set=featuresets)
+        classifier = OurClassifier.train(featuresets)
         expected1 = "neutral"
-        self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_neutral3))
+        self.assertEqual(expected1, classifier.gamma(self.feature_set_neutral3))
 
     def test_gamma_negative(self):
         featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
                        self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
-        classifier = OurClassifier.train(training_set=featuresets)
+        classifier = OurClassifier.train(featuresets)
         expected1 = "negative"
-        self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_negative3))
+        self.assertEqual(expected1, classifier.gamma(self.feature_set_negative3))
 
     def test_present_features_multiple(self):
         featuresets = [self.feature_set_present1, self.feature_set_present2]
