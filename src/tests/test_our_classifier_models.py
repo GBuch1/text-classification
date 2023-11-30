@@ -97,7 +97,7 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.feature23 = OurFeature("contains alright", False)
         self.feature24 = OurFeature("contains normal", True)
 
-        self.feature_set_positive = OurFeatureSet(features={self.feature20, self.feature18})
+        self.feature_set_positive1 = OurFeatureSet(features={self.feature20, self.feature18})
         self.feature_set_positive2 = OurFeatureSet(features={self.feature6, self.feature8})
         self.feature_set_positive3 = OurFeatureSet(features={self.feature6, self.feature21})
         self.feature_set_positive4 = OurFeatureSet(features={self.feature19, self.feature18})
@@ -112,9 +112,9 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.feature5 = OurFeature("contains amazing", True)
         self.feature6 = OurFeature("contains horrible", True)
 
-        self.feature_set_positive1 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        self.feature_set_present1 = OurFeatureSet(features={self.feature5, self.feature6, self.feature8},
                                                    known_clas="positive")
-        self.feature_set_positive2 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
+        self.feature_set_present2 = OurFeatureSet(features={self.feature11, self.feature7, self.feature6},
                                                    known_clas="positive")
         self.feature_set_neutral1 = OurFeatureSet(features={self.feature1, self.feature2, self.feature3},
                                                   known_clas="neutral")
@@ -158,7 +158,7 @@ class OurAbstractClassifierTest(unittest.TestCase):
                                                    known_clas="positive")
 
     def test_gamma(self):
-        featuresets = [self.feature_set_positive, self.feature_set_positive2]
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2]
         classifier = OurClassifier.train(featuresets)
         expected = "positive"
         self.assertEqual(expected, classifier.gamma(self.feature_set_positive4))
@@ -185,22 +185,28 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.assertEqual(expected1, classifier.gamma(a_feature_set=self.feature_set_negative3))
 
     def test_present_features_multiple(self):
-        expected_output1 = {"contains pain: True neg/pos/neut 7:1:2", "contains awful: True neg/pos/neut 6:2:1",
-                            "contains terrific: "
-                            "True neg/pos/neut 3:6:1"}
-        output1 = OurClassifier.present_features(top_n=3)
+        featuresets = [self.feature_set_present1, self.feature_set_present2]
+        classifier = OurClassifier.train(featuresets)
+        expected_output1 = {"contains pain": {'positive': 0.2, 'negative': 0.8},
+                            "contains awful": {'positive': 0.1, 'negative': 0.9},
+                            "contains terrific": {'positive': 0.75, 'negative': 0.25}}
+        true_output1 = classifier.present_features(top_n=3)
 
-        self.assertEqual(expected_output1, output1)
+        self.assertEqual(expected_output1, true_output1)
 
     def test_present_features_single(self):
-        expected_output2 = "contains pain: True neg/pos/neut 7:1:2"
-        output2 = OurClassifier.present_features(top_n=1)
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2]
+        classifier = OurClassifier.train(featuresets)
+        expected_output2 = {'contains terrific': {'positive': 0.4, 'negative': 0.6}}
+        true_output2 = classifier.present_features(top_n=1)
 
-        self.assertEqual(expected_output2, output2)
+        self.assertEqual(expected_output2, true_output2)
 
     def test_present_features_error(self):
-        output3 = OurClassifier.present_features(top_n=0)
-        if output3:
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2]
+        classifier = OurClassifier.train(featuresets)
+        true_output3 = classifier.present_features(top_n=0)
+        if true_output3:
             self.assertRaises(ValueError)
 
     def test_train_gamma(self):
@@ -208,22 +214,22 @@ class OurAbstractClassifierTest(unittest.TestCase):
         featuresets = [self.feature_set_positive3, self.feature_set_positive4]
         classifier = OurClassifier.train(featuresets)
         expected = "positive"
-        self.assertEqual(expected, classifier.gamma(self.feature_set_positive))
+        self.assertEqual(expected, classifier.gamma(self.feature_set_positive1))
 
-    def test_train_probVariable(self):
-        """Only one test here for the method probability_value() because not sure if it will be implemented
-           in the final code. For now using it as one of the three necessary tests for the train method.
-           This method if implemented would store the probability value of the gamma equation before gamma
-           returns the predicted class as a string."""
-        featuresets = [self.feature_set_positive4, self.feature_set_positive5, self.feature_set_neutral4,
-                       self.feature_set_neutral5, self.feature_set_negative4, self.feature_set_negative5]
-        classifier = OurClassifier.train(training_set=featuresets)
-        expected_prob = 0.0326758
-        self.assertAlmostEqual(expected_prob,
-                               classifier.gamma.probability_value(a_feature_set=self.feature_set_positive6))
+    # def test_train_probVariable(self):
+    #     """Only one test here for the method probability_value() because not sure if it will be implemented
+    #        in the final code. For now using it as one of the three necessary tests for the train method.
+    #        This method if implemented would store the probability value of the gamma equation before gamma
+    #        returns the predicted class as a string."""
+    #     featuresets = [self.feature_set_positive4, self.feature_set_positive5, self.feature_set_neutral4,
+    #                    self.feature_set_neutral5, self.feature_set_negative4, self.feature_set_negative5]
+    #     classifier = OurClassifier.train(training_set=featuresets)
+    #     expected_prob = 0.0326758
+    #     self.assertAlmostEqual(expected_prob,
+    #                            classifier.gamma.probability_value(a_feature_set=self.feature_set_positive6))
 
     def test_train_empty(self):
-        featuresets = set()
+        featuresets = None
         with self.assertRaises(ValueError):
             OurClassifier.train(training_set=featuresets)
 
