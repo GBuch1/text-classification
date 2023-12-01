@@ -25,10 +25,17 @@ class OurFeatureTest(unittest.TestCase):
 
 class OurFeatureSetTest(unittest.TestCase):
     def setUp(self):
+        content = ["Terrible war", "Fantastic great"]
+        tweet1 = content[0]
+        tweet2 = content[1]
+
+        self.feature_set_terrible_war_x = OurFeatureSet.build(tweet1, "negative")
+        self.feature_set_great_fantastic_y = OurFeatureSet.build(tweet2, "positive")
+
         self.feature1 = OurFeature("contains war", True)
         self.feature2 = OurFeature("contains fantastic", True)
-        self.feature3 = OurFeature("contains terrible", False)
-        self.feature4 = OurFeature("contains great", False)
+        self.feature3 = OurFeature("contains terrible", True)
+        self.feature4 = OurFeature("contains great", True)
         self.feature_set1 = OurFeatureSet(features={self.feature1, self.feature2})
         self.feature_set2 = OurFeatureSet(features={self.feature3, self.feature4})
         self.feature_set3 = OurFeatureSet(features={self.feature1, self.feature3})
@@ -36,8 +43,8 @@ class OurFeatureSetTest(unittest.TestCase):
 
         self.feature5 = OurFeature("contains hate", True)
         self.feature6 = OurFeature("contains terrific", True)
-        self.feature7 = OurFeature("contains awful", False)
-        self.feature8 = OurFeature("contains nice", False)
+        self.feature7 = OurFeature("contains awful", True)
+        self.feature8 = OurFeature("contains nice", True)
         self.feature_set5 = OurFeatureSet(features={self.feature5, self.feature6})
         self.feature_set6 = OurFeatureSet(features={self.feature7, self.feature8})
         self.feature_set7 = OurFeatureSet(features={self.feature5, self.feature7})
@@ -47,31 +54,28 @@ class OurFeatureSetTest(unittest.TestCase):
         self.feature10 = OurFeature(None, True)
         self.feature_set9 = OurFeatureSet(features={self.feature9, self.feature10})
 
-    def test_build(self):
-        our_set1 = (OurFeature("contains war", True), OurFeature("contains fantastic", True))
-        our_set2 = set["contains terrible": False, "contains great": False]
-        our_set3 = set["contains war": True, "contains terrible": False]
-        our_set4 = set["contains fantastic": True, "contains great": False]
+    def test_build_output(self):
+        our_set1 = {OurFeature("contains word war", True), OurFeature("contains word terrible", True),
+                    OurFeature("length of word 3", True), OurFeature("length of word 8", True)}
+        #our_set2 = {OurFeature("length of word 3", True), OurFeature("length of word 8", True)}
 
-        self.assertIn(our_set1, self.feature_set1.feat)
-        self.assertIn(our_set2, self.feature_set1)
-        self.assertIn(our_set3, self.feature_set3)
-        self.assertIn(our_set4, self.feature_set4)
+        self.assertEqual(our_set1, self.feature_set_terrible_war_x.feat)
+        #self.assertIn(our_set2, self.feature_set_great_fantastic_y.feat)
 
-    def test_build2(self):
-        our_set5 = set["contains hate": True, "contains terrific": True]
-        our_set6 = set["contains awful": False, "contains nice": False]
-        our_set7 = set["contains hate": True, "contains awful": False]
-        our_set8 = set["contains terrific": True, "contains nice": False]
+    def test_build_feature_in(self):
+        our_feat5 = OurFeature("contains hate", True)
+        our_feat6 = OurFeature("contains awful", True)
+        our_feat7 = OurFeature("contains hate", True)
+        our_feat8 = OurFeature("contains terrific", True)
 
-        self.assertIn(our_set5, self.feature_set5)
-        self.assertIn(our_set6, self.feature_set6)
-        self.assertIn(our_set7, self.feature_set7)
-        self.assertIn(our_set8, self.feature_set8)
+        self.assertIn(our_feat5, self.feature_set5.feat)
+        self.assertIn(our_feat6, self.feature_set6.feat)
+        self.assertIn(our_feat7, self.feature_set7.feat)
+        self.assertIn(our_feat8, self.feature_set8.feat)
 
     def test_none(self):
-        our_set9 = set["contains incredible": None, None, True]
-        self.assertEqual(our_set9, self.feature_set9)
+        our_set9 = {OurFeature("contains incredible", None), OurFeature(None, True)}
+        self.assertEqual(our_set9, self.feature_set9.feat)
 
 
 class OurAbstractClassifierTest(unittest.TestCase):
@@ -97,8 +101,8 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.feature23 = OurFeature("contains alright", False)
         self.feature24 = OurFeature("contains normal", True)
 
-        self.feature_set_positive1 = OurFeatureSet(features={self.feature20, self.feature18}, known_clas= "positive")
-        self.feature_set_positive2 = OurFeatureSet(features={self.feature6, self.feature8},  known_clas= "positive")
+        self.feature_set_positive1 = OurFeatureSet(features={self.feature20, self.feature18}, known_clas="positive")
+        self.feature_set_positive2 = OurFeatureSet(features={self.feature6, self.feature8}, known_clas="positive")
         self.feature_set_positive3 = OurFeatureSet(features={self.feature6, self.feature21}, known_clas="positive")
         self.feature_set_positive4 = OurFeatureSet(features={self.feature19, self.feature18}, known_clas="positive")
         self.feature_set_neutral = OurFeatureSet(features={self.feature21, self.feature13})
@@ -164,8 +168,8 @@ class OurAbstractClassifierTest(unittest.TestCase):
         self.assertEqual(expected, classifier.gamma(self.feature_set_positive2))
 
     def test_gamma_positive(self):
-        featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_neutral1,
-                       self.feature_set_neutral2, self.feature_set_negative1, self.feature_set_negative2]
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2, self.feature_set_negative1,
+                       self.feature_set_negative2]
         classifier = OurClassifier.train(featuresets)
         expected1 = "positive"
         self.assertEqual(expected1, classifier.gamma(self.feature_set_positive3))
@@ -189,30 +193,32 @@ class OurAbstractClassifierTest(unittest.TestCase):
         feature13 = OurFeature("contains evil", True)
         featureset1 = OurFeatureSet(features={feature11, feature12, feature13}, known_clas="negative")
         featureset2 = OurFeatureSet(features={feature7, feature8, feature9}, known_clas="negative")
-        featureset3 = OurFeatureSet(features={feature4, feature5,feature6},
+        featureset3 = OurFeatureSet(features={feature4, feature5, feature6},
                                     known_clas="negative")
         featuresets = [featureset1, featureset2]
         classifier = OurClassifier.train(featuresets)
         expected1 = "negative"
         self.assertEqual(expected1, classifier.gamma(featureset3))
 
-    def test_present_features_multiple(self):
-        featuresets = [self.feature_set_present1, self.feature_set_present2]
-        classifier = OurClassifier.train(featuresets)
-        expected_output1 = {"contains pain": {'positive': 0.2, 'negative': 0.8},
-                            "contains awful": {'positive': 0.1, 'negative': 0.9},
-                            "contains terrific": {'positive': 0.75, 'negative': 0.25}}
-        print(classifier.present_features(top_n=3))
-
-        # self.assertEqual(expected_output1, true_output1)
-
     def test_present_features_single(self):
-        featuresets = [self.feature_set_positive1, self.feature_set_positive2]
+        feature4 = OurFeature("contains sucks", True)
+        feature5 = OurFeature("contains sucks", True)
+        feature6 = OurFeature("contains TERRIBLE", True)
+        feature7 = OurFeature("contains sucks", True)
+        feature8 = OurFeature("contains TERRIBLE", True)
+        feature9 = OurFeature("contains TERRIBLE", True)
+        feature11 = OurFeature("contains TERRIBLE", True)
+        feature12 = OurFeature("contains TERRIBLE", True)
+        feature13 = OurFeature("contains evil", True)
+        featureset1 = OurFeatureSet(features={feature11, feature12, feature13}, known_clas="positive")
+        featureset2 = OurFeatureSet(features={feature7, feature8, feature9}, known_clas="negative")
+        featureset3 = OurFeatureSet(features={feature4, feature5, feature6},
+                                    known_clas="negative")
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2, featureset1, featureset2, featureset3]
         classifier = OurClassifier.train(featuresets)
-        #expected_output2 = {'contains terrific': {'positive': 0.4, 'negative': 0.6}}
-        print(classifier.present_features(top_n=1))
-
-        # self.assertEqual(expected_output2, true_output2)
+        expected = "contains TERRIBLE: neg:pos = 3.00:1\n"
+        actual = classifier.return_present_features(top_n=1)
+        self.assertEqual(expected, actual)
 
     def test_present_features_error(self):
         featuresets = [self.feature_set_positive1, self.feature_set_positive2]
@@ -220,6 +226,26 @@ class OurAbstractClassifierTest(unittest.TestCase):
         true_output3 = classifier.present_features(top_n=0)
         if true_output3:
             self.assertRaises(ValueError)
+
+    def test_present_features_superb(self):
+        feature4 = OurFeature("contains sucks", True)
+        feature5 = OurFeature("contains sucks", True)
+        feature6 = OurFeature("contains TERRIBLE", True)
+        feature7 = OurFeature("contains TERRIBLE", True)
+        feature8 = OurFeature("contains TERRIBLE", True)
+        feature9 = OurFeature("contains TERRIBLE", True)
+        feature11 = OurFeature("contains sucks", True)
+        feature12 = OurFeature("contains TERRIBLE", True)
+        feature13 = OurFeature("contains evil", True)
+        featureset1 = OurFeatureSet(features={feature11, feature12, feature13}, known_clas="positive")
+        featureset2 = OurFeatureSet(features={feature7, feature8, feature9}, known_clas="negative")
+        featureset3 = OurFeatureSet(features={feature4, feature5, feature6},
+                                    known_clas="negative")
+        featuresets = [self.feature_set_positive1, self.feature_set_positive2, featureset1, featureset2, featureset3]
+        classifier = OurClassifier.train(featuresets)
+        expected = "contains TERRIBLE: neg:pos = 4.67:1\ncontains sucks: neg:pos = 2.33:1\n"
+        actual = classifier.return_present_features(top_n=2)
+        self.assertEqual(expected, actual)
 
     def test_train_gamma(self):
         """If gamma returns the expected results then we know that our classifier is being trained correctly"""

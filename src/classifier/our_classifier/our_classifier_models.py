@@ -3,7 +3,8 @@
 __authors__ = "Garrett Buchanan" "Darian Choi"
 __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
-
+#SNAIL
+import re
 from collections import defaultdict, Counter
 from itertools import islice
 from math import log10
@@ -35,10 +36,16 @@ class OurFeatureSet(FeatureSet):
         features = set()
 
         if isinstance(source_object, str):
-            tokens = source_object.lower()
-            split_words = tokens.split()
-            for token in split_words:
-                features.add(Feature(name=f"contains word {token}", value=True))  # Create a feature for each token
+
+            words = source_object.lower().split()
+            for word in words:
+                token = len(word)
+                features.add(Feature(name=f"length of word {token}", value=True))
+
+            for word in words:
+                if word.isalpha() and len(word) > 1 or word == ":)" or word == ":(":
+                    features.add(
+                        Feature(name=f"contains word {word}", value=True))
 
         return cls(features, known_clas)
 
@@ -69,7 +76,7 @@ class OurClassifier(AbstractClassifier):
                 if feature.name not in self.feature_probabilities:
                     pass
                 else:
-                    feature_prob = self.feature_probabilities[feature.name][cls] # access the probability
+                    feature_prob = self.feature_probabilities[feature.name][cls]  # access the probability
                     probability += log10(feature_prob + 1)
 
                     if probability > highest_probability:
@@ -82,19 +89,20 @@ class OurClassifier(AbstractClassifier):
     ## the greater the ratio the greater informativeness it is
     ## just to find a way to sort all the ratio probablities with the keys with it
 
-    #def ratio(self):
+    # def ratio(self):
 
-        # for feature in self.feature_probabilities.keys():
-        #     positive_prob = self.feature_probabilities[feature]["positive"]
-        #     negative_prob = self.feature_probabilities[feature]["negative"]
-        #     if positive_prob > negative_prob:
-        #         ratio = positive_prob / negative_prob
-        #         self.stored_ratio.update({feature: ratio})
-        #     else:
-        #         ratio = negative_prob / positive_prob
-        #         self.stored_ratio.update({feature: ratio})
+    # for feature in self.feature_probabilities.keys():
+    #     positive_prob = self.feature_probabilities[feature]["positive"]
+    #     negative_prob = self.feature_probabilities[feature]["negative"]
+    #     if positive_prob > negative_prob:
+    #         ratio = positive_prob / negative_prob
+    #         self.stored_ratio.update({feature: ratio})
+    #     else:
+    #         ratio = negative_prob / positive_prob
+    #         self.stored_ratio.update({feature: ratio})
 
-    def present_features(self, top_n: int = 1) -> None:
+
+    def return_present_features(self, top_n: int = 1) -> str:
         """TODO: IMPLEMENT ME:"""
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
@@ -105,25 +113,37 @@ class OurClassifier(AbstractClassifier):
         #   need to have a variable with the saved probabilities for each feature in order to then list
         #   in descending order. Need variables for the feature and the score, create a subclass for this
         #   or use a dictionary with key value pairs where key = feature and value = prob score.
-        for feature in self.feature_probabilities.keys():
-            positive_prob = self.feature_probabilities[feature]["positive"] + 1
-            negative_prob = self.feature_probabilities[feature]["negative"] + 1
+        ratio_list = []
 
-            if positive_prob > negative_prob:
-                ratio = positive_prob / negative_prob
-                formatted_ratio = "pos:neg {:.2f}:1".format(ratio)  #formatting the ratios
-                self.stored_ratio.update({feature: formatted_ratio})
-            else:
+        for feature, class_probabilities in self.feature_probabilities.items():
+            positive_prob = class_probabilities["positive"]
+            negative_prob = class_probabilities["negative"]
+            if positive_prob == 0 or negative_prob == 0:
+                continue
+
+            if negative_prob >= positive_prob:
                 ratio = negative_prob / positive_prob
-                formatted_ratio = "neg:pos {:.2f}:1".format(ratio)  # Formatting the ratios
-                self.stored_ratio.update({feature: formatted_ratio})
+                formatted_ratio = ("neg:pos", ratio)
+            else:
+                ratio = positive_prob / negative_prob
+                formatted_ratio = ("pos:neg", ratio)
 
-        sorted_ratios = dict(sorted(self.stored_ratio.items(), key=lambda item: item[1], reverse=True))
-        top_n_ratios = dict(islice(sorted_ratios.items(), top_n))
-        for feature, ratio in top_n_ratios.items():
-            print(f"{feature}: {ratio}")
+            ratio_list.append((feature, formatted_ratio))
 
 
+        sorted_ratios = sorted(ratio_list, key=lambda item: item[1][1], reverse=True)
+
+
+        top_n_ratios = sorted_ratios[:top_n]
+        return_values = ""
+        for feature, ratio in top_n_ratios:
+            ratio_label, ratio_value = ratio
+            return_value = f"{feature}: {ratio_label} = {ratio_value:.2f}:1\n"
+            return_values += return_value
+        return return_values
+
+    def present_features(self, top_n: int = 1) -> None:
+        print(self.return_present_features(top_n))
 
     @classmethod
     def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
@@ -167,8 +187,7 @@ class OurClassifier(AbstractClassifier):
                                 feature_probabilities[feature.name] = {}
                             feature_probabilities[feature.name][unique] = score
 
-
                 # come up with a way to store a dictionary with feature name and class as key
-                        # value should store the probablity
+                # value should store the probablity
         # print(feature_probabilities)
         return cls(class_word_counts, class_total_words, classes, feature_probabilities)
