@@ -31,9 +31,9 @@ Some key design decisions that were made in this class were that we initially tr
 **train**: finally our train loops through all the feature sets in the training set passed in. We made a counter for the total amount of features in the class and the frequency of the feature in the class. Then after getting the numbers for each feature we iterate through each feature and divide the two counter values to get a probability of a feature belonging to a specific given class.\
 
 TESTS IMPLEMENTATION: 
-FeatureSetTest: we set up a lot of features and then built our own feature set and through calling the build method on the same features we compared to see if the values were equivalent and being built correctly.
-GammaTests: gamma was tested by feeding a feature set that we knew would be a certain class based on the math we did and then comparing if that class matched the predicted class gamma outputted 
-present_featurestest: Because present features returned nothing we needed to create a different method called return_present_features (contained all the same logic from the original present features but the only difference being that it returns a string) in order to test our method. In doing this we checked if the return value was equivalent to the expected string based on the classifier instance we had passed in. 
+**FeatureSetTest**: we set up a lot of features and then built our own feature set and through calling the build method on the same features we compared to see if the values were equivalent and being built correctly.\
+**GammaTests**: gamma was tested by feeding a feature set that we knew would be a certain class based on the math we did and then comparing if that class matched the predicted class gamma outputted \
+**present_featurestest**: Because present features returned nothing we needed to create a different method called return_present_features (containing all the same logic from the original present features but the only difference being that it returns a string) in order to test our method. In doing this we checked if the return value was equivalent to the expected string based on the classifier instance we had passed in. \
 
 
 ### **MOST INFORMATIVE FEATURES ANALYSIS**
