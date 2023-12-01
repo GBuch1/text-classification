@@ -16,17 +16,13 @@ from classifier.classifier_models import FeatureSet, AbstractClassifier, Feature
 
 
 class OurFeature(Feature):
-    """"TODO: MAYBE IMPLEMENT?"""
     pass
 
 
 class OurFeatureSet(FeatureSet):
-    """TODO: implement so that method takes in a string data type which then tokenizes the text and builds a feature
-        set based on the features in that document"""
 
     @classmethod
     def build(cls, source_object: Any, known_clas=None, **kwargs) -> FeatureSet:
-        """TODO: IMPLEMENT ME"""
         """
         :param source_object: object to build the feature set from
         :param known_clas: pre-defined classification of the source object
@@ -51,7 +47,6 @@ class OurFeatureSet(FeatureSet):
 
 
 class OurClassifier(AbstractClassifier):
-    """# TODO: Implement math portion for gamma method to classify objects based on trained data."""
 
     def __init__(self, class_word_counts, class_total_words, classes, feature_probabilities):
         self.classes = classes
@@ -61,8 +56,7 @@ class OurClassifier(AbstractClassifier):
         self.stored_ratio = {}
 
     def gamma(self, feat_set: OurFeatureSet) -> str:
-        """"TODO: IMPLEMENT ME:"""
-        """ takes in a feature set then iterates through each feature and then 
+        """ takes in a feature set then iterates through each feature and then
         calculates the probability of it mapping to each class"""
         # gamma needs to take in a specific feature set CALL the probablities for the specific class for each feature from feature probabilities variable
         # take the highest probablity of the three classes
@@ -103,7 +97,6 @@ class OurClassifier(AbstractClassifier):
 
 
     def return_present_features(self, top_n: int = 1) -> str:
-        """TODO: IMPLEMENT ME:"""
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
         how "good" a feature is in determining the class for an object.
@@ -147,15 +140,13 @@ class OurClassifier(AbstractClassifier):
 
     @classmethod
     def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
-        """TODO: IMPLEMENT ME"""
-
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
         present_features` method calls immediately without needing any other method invocations prior to them.
 
         :param training_set: An iterable collection of `FeatureSet` to use for training the classifier
         :return: an instance of `AbstractClassifier` with its training already completed
-        
+
         """
         class_word_counts = defaultdict(Counter)
         class_total_words = {"positive": 0, "negative": 0}
