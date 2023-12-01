@@ -33,7 +33,7 @@ Some key design decisions that were made in this class were that we initially tr
 TESTS IMPLEMENTATION: \
 **FeatureSetTest**: we set up a lot of features and then built our own feature set and through calling the build method on the same features we compared to see if the values were equivalent and being built correctly.\
 **GammaTests**: gamma was tested by feeding a feature set that we knew would be a certain class based on the math we did and then comparing if that class matched the predicted class gamma outputted \
-**present_featurestest**: Because present features returned nothing we needed to create a different method called return_present_features (containing all the same logic from the original present features but the only difference being that it returns a string) in order to test our method. In doing this we checked if the return value was equivalent to the expected string based on the classifier instance we had passed in. \
+**present_featurestest**: Because present features returned nothing we needed to create a different method called return_present_features (containing all the same logic from the original present features but the only difference being that it returns a string) in order to test our method. In doing this we checked if the return value was equivalent to the expected string based on the classifier instance we had passed in. 
 
 
 ### **MOST INFORMATIVE FEATURES ANALYSIS**
