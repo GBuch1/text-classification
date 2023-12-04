@@ -57,10 +57,7 @@ class OurFeatureSetTest(unittest.TestCase):
     def test_build_output(self):
         our_set1 = {OurFeature("contains word war", True), OurFeature("contains word terrible", True),
                     OurFeature("length of word 3", True), OurFeature("length of word 8", True)}
-        #our_set2 = {OurFeature("length of word 3", True), OurFeature("length of word 8", True)}
-
         self.assertEqual(our_set1, self.feature_set_terrible_war_x.feat)
-        #self.assertIn(our_set2, self.feature_set_great_fantastic_y.feat)
 
     def test_build_feature_in(self):
         our_feat5 = OurFeature("contains hate", True)

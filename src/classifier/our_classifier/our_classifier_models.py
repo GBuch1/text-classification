@@ -3,7 +3,8 @@
 __authors__ = "Garrett Buchanan" "Darian Choi"
 __credits__ = ["Mike Ryu, Garrett Buchanan, Darian Choi"]
 __email__ = "gbuchanan@westmont.edu" "dchoi@westmont.edu"
-#SNAIL
+
+# SNAIL
 import re
 from collections import defaultdict, Counter
 from itertools import islice
@@ -95,7 +96,6 @@ class OurClassifier(AbstractClassifier):
     #         ratio = negative_prob / positive_prob
     #         self.stored_ratio.update({feature: ratio})
 
-
     def return_present_features(self, top_n: int = 1) -> str:
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
@@ -123,9 +123,7 @@ class OurClassifier(AbstractClassifier):
 
             ratio_list.append((feature, formatted_ratio))
 
-
         sorted_ratios = sorted(ratio_list, key=lambda item: item[1][1], reverse=True)
-
 
         top_n_ratios = sorted_ratios[:top_n]
         return_values = ""
